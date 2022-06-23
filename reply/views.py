@@ -78,20 +78,20 @@ def updateReply(request, rid):
         # update form 을 보여주는 페이지로 bid와 함께 이동 url은 update/bid
         replyForm = ReplyForm(instance=reply)  # 폼 생성한 후, 기존 내용 채워주기 위해서 instance=post[조회한 게시글] 설정
         if request.user != reply.writer:
-            return redirect(request, 'reply/read/' + str(reply.id))
+            return redirect(request, '/board/read/' + str(reply.post_id))
         return render(request, 'reply/create.html', {'replyForm':replyForm})
     elif request.method == 'POST':
         replyForm = ReplyForm(request.POST, instance=reply)
         if replyForm.is_valid():  # 값들의 유효성 검사
             reply = replyForm.save(commit=False)
             reply.save()
-        return redirect('/reply/read/' + str(reply.id))
+        return redirect('/board/read/' + str(reply.post_id))
 
 
 @login_required(login_url='/user/login')
 def deleteReply(request, rid):
     reply = Reply.objects.get(id=rid)
     if request.user != reply.writer:
-        return redirect('/reply/list')
+        return redirect('/board/read/' + str(reply.post_id))
     reply.delete()
-    return redirect('/reply/list')
+    return redirect('/board/read/' + str(reply.post_id))
