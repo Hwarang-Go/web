@@ -117,11 +117,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-3">
+                        <div class="row col-md-3">
                         {% if request.user == reply.writer %}
                             <div class="row align-items-end">
-                                <div><a class="link-dark text-decoration-none me-3" href="">Edit</a></div>
-                                <div><a class="link-dark text-decoration-none" href="">Delete</a></div>
+                                <div class="row">
+                                    <a class="link-dark text-decoration-none me-3" href="/reply/update/{{ reply.id }}">Edit</a>
+                                    <a class="link-dark text-decoration-none" href="/reply/delete/{{ reply.id }}">Delete</a>
+                                </div>
                             </div>
                         {% endif %}
                         </div>
