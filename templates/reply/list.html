@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ request.user }} 로그인 함 <br/>
+{% for reply in replys %}
+    {{ reply.id }}
+    <a href="read/{{ reply.id }}">{{ reply.contents }}</a>
+    {{ reply.writer }} <br/>
+{% endfor %}
+<a href="create">댓글 작성</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if reply %}
+    <a href="../list">목록</a> <br/>
+    {{ reply.id }}
+    {{ reply.contents }}
+    {% if reply.writer == request.user %}
+        <a href="../update/{{reply.id}}">수정</a>
+        <a href="../delete/{{reply.id}}">삭제</a>
+    {% endif %}
+{% endif %}
+</body>
+</html>

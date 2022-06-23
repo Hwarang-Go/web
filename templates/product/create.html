@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="createPost" method="post">
+    {% csrf_token %}
+  <input type="text" name="fname" placeholder="name"/>
+  <input type="text" name="fdescript" placeholder="descript"/>
+  <input type="text" name="fprice" placeholder="price"/>
+  <input type="text" name="fquantity" placeholder="quantity"/>
+  <button>저장</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<!-- Contact-->
+<section class="page-section" id="contact">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Sign Up</h2>
+            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+        </div>
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- * * SB Forms Contact Form * *-->
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- This form is pre-integrated with SB Forms.-->
+        <!-- To make this form functional, sign up at-->
+        <!-- https://startbootstrap.com/solution/contact-forms-->
+        <!-- to get an API token!-->
+        <form id="contactForm" data-sb-form-api-token="API_TOKEN" method="post">
+            {% csrf_token %}
+
+            <div class="row align-items-stretch mb-6">
+                <div class="form-group">
+                    <!-- Name input-->
+                    <input name="username" class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
+                    <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                </div>
+                <div class="form-group">
+                    <!-- Password1 input-->
+                    <input name="password1" class="form-control" type="password" placeholder="Password *" />
+                </div>
+                <div class="form-group">
+                    <!-- Password2 input-->
+                    <input name="password2" class="form-control" type="password" placeholder="Confirm Your Password *" />
+                </div>
+            </div>
+            <!-- Submit success message-->
+            <!---->
+            <!-- This is what your users will see when the form-->
+            <!-- has successfully submitted-->
+            <div class="d-none" id="submitSuccessMessage">
+                <div class="text-center text-white mb-3">
+                    <div class="fw-bolder">Form submission successful!</div>
+                    To activate this form, sign up at
+                    <br />
+                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                </div>
+            </div>
+            <!-- Submit error message-->
+            <!---->
+            <!-- This is what your users will see when there is-->
+            <!-- an error submitting the form-->
+            <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+            <!-- Submit Button-->
+            <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit">SIGN UP</button></div>
+        </form>
+    </div>
+</section>
+
+
+
+
+<!--<form method="post">-->
+<!--  {% csrf_token %}-->
+<!--  {{ signupForm }}-->
+<!--  <button>회원가입</button>-->
+<!--</form>-->
+{% endblock %}
+<!--<!DOCTYPE html>-->
+
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>SignUp</title>-->
+
+<!--</head>-->
+<!--<body>-->
+
+<!--</body>-->
+<!--</html>-->

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 절대경로 ex02/getdata, 상대경로 getdata (현재위치가 /ex02/) -->
+  <form action="getdata" method="post">
+      {% csrf_token %}
+      <!-- 그냥 form 태그에서는 csrf 에러 안남, django에서 지원하는 기능 때문에 뜨는것 -->
+    <input type="text" name="userid">
+    <input type="password" name="userpw">
+    <input type="submit" value="로그인 input tag">
+    <button>로그인 button</button>
+    <!-- 요새는 button 많이 쓴다는 거 같음 react에서도 button 웬만하면 쓴다고함 -->
+  </form>
+<!-- <img src="/static/test_img.jpg"> -->
+<!-- 지금은 경로가 하나라서 위에가 편하지만, 나중에 복잡해지면 아래와 같이 -->
+<!-- 맨위에 보면 load static 해둔 것이 있고 -->
+<!-- 아래 코드처럼 템플릿 문법으로 써서 이미지를 불러올 수 있음-->
+<!-- <img src="{% static 'test_img.jpg' %}"> -->
+<!-- 페이지 소스 보기 하면 템플릿 문법 쓴게 실제 경로로 바뀌어서 나옴  -->
+</body>
+</html>

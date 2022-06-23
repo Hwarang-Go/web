@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block contents%}
+
+<!-- <form action="create" method="post"> -->
+<!-- action 속성 없이 그 화면(그 url)에서 메소드만 바꿔서 가능 -->
+<!-- update 기능도 이 페이지를 쓰는데 action="create" 면 오류남. 없애자 -->
+<section class="page-section bg-light" id="portfolio">
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+<!--            {{ postForm }}-->
+            <div class="col-md-12">
+                <input name="title" placeholder="제목을 입력해주세요" class="form-control" type="text" >
+            </div>
+            <hr/>
+<!--            <input type="text" name="title">-->
+            <textarea name="contents" id="summernote" ></textarea>
+<!--            <button>게시글 작성</button>-->
+            <hr/>
+            <div class="text-center"><button class="btn btn-primary text-uppercase" type="submit">게시글 작성</button></div>
+        </form>
+    <script>
+      $('#summernote').summernote({
+        placeholder: '내용을 입력해주세요',
+        tabsize: 2,
+        height: 200,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+      });
+</script>
+
+<!--<form method="post">-->
+<!--    {% csrf_token %}-->
+<!--    {{ postForm }}-->
+<!--    &lt;!&ndash; 더 이상 input 태그를 쓰는게 아니라 django의 form을 사용해서 입력 양식 자동으로 만듬 &ndash;&gt;-->
+<!--  &lt;!&ndash;-->
+<!--    <input type="text" name="ptitle" placeholder="title" /><br/>-->
+<!--  <textarea name="pcontents" placeholder="contents"></textarea><br/>-->
+<!--  &ndash;&gt;-->
+<!--    <button>저장</button>-->
+<!--</form>-->
+    </div>
+</section>
+
+{% endblock %}

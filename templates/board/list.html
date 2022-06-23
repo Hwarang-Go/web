@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% load static %}
+{% block contents %}
+<!-- Portfolio Grid-->
+<section class="page-section bg-light" id="portfolio">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Portfolio</h2>
+            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+        </div>
+        <div class="row">
+
+            <!-- Load board_post -->
+            {% if posts %}
+            {% for post in posts %}
+            <div class="col-lg-4 col-sm-6 mb-4">
+                    <div class="portfolio-item">
+                    <a class="portfolio-link"  href="read/{{ post.id }}">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        {% if post.id|modulo:6 == 0 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 1 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 2 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 3 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 4 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 5 %}
+                            <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />
+                        {% endif %}
+
+                    </a>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-caption-heading">{{ post.title }}</div>
+                        <div class="portfolio-caption-subheading text-muted">{{ post.id }}</div>
+
+                        <div id="heart" class="portfolio-caption-heading" onclick="sendRequest({{ post.id }}, this, {{ post.like.count }})">
+                            {% if request.user in post.like.all %}
+                                ♥ {{ post.like.count }}
+                            {% else %}
+                                ♡ {{ post.like.count }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <script>
+                function sendRequest(bid, event, like_cnt) {
+                    var httpRequest = new XMLHttpRequest();
+                    httpRequest.onreadystatechange = function() {
+                        if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200 ) {
+                            // document.getElementById("text").innerHTML = httpRequest.responseText;
+
+                            var json_data = JSON.parse(httpRequest.responseText);
+                            if (json_data['message'] == 'added') {
+                                event.innerText = '♥ ' + (like_cnt+1);
+                            }
+                            // 기존에 있는 like_cnt를 사용하므로써 쓸데없는 통신 줄이는 방법
+                            else if (json_data['message'] == 'deleted'){
+                                event.innerText = '♡ ' + json_data['like_cnt'];
+                            }
+                            // 백엔드에서 post.like.count() 로 굳이 다시 세서 통신을 하기 때문에 안좋은 코드
+
+                            // 아래 코드는 그냥 문자열로 한것, 위에는 json으로 파싱해서 쓰는것
+                            // if (httpRequest.responseText == '{"message": "ok"}') {
+                            //    console.log('test2');
+                            // }
+                        }
+                    };
+                    // GET 방식으로 요청을 보내면서 데이터를 동시에 전달함.
+                    httpRequest.open("GET", "/like/"+bid, true);
+                    httpRequest.send();
+                }
+            </script>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; is_authenticated : 세션이 있으면 설정되는 값 &ndash;&gt;-->
+<!--{% if request.user.is_authenticated %}-->
+<!--{{ request.user }} 로그인 함 <br/>-->
+<!--{% endif %}-->
+
+<!--{% for post in posts %}-->
+<!--{{ post.id }}-->
+<!--&lt;!&ndash; 하나의 글 조회하기 위해 a 태그 사용하고 쿼리(옛날 방식) 날림 &ndash;&gt;-->
+<!--&lt;!&ndash; <a href="readGet?id={{ post.id }}"> {{ post.title }} </a><br/><br/> &ndash;&gt;-->
+<!--&lt;!&ndash; 요즘은 / 뒤에 id 넣는 방식, 추가적인 작업 필요(urls.py) &ndash;&gt;-->
+<!--<a href="read/{{ post.id }}"> {{ post.title }} </a>-->
+<!--{{ post.writer }} <br/>-->
+<!--{% endfor %}-->
+
+<!-- 테스트용 -->
+<!--
+{% for post in testPost %}
+    title : {{ post.title }}<br/><br/>
+    contents : <br/>
+    {{ post.contents }} <br/><br/>
+    create date : <br/>
+    {{ post.create_date }} <br/><br/><br/>
+{% endfor %}
+-->
+
+<!--<a href="create">게시글 작성</a>-->
+<!--</body>-->
+<!--</html>-->

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_tags %}
+{% block contents %}
+
+
+<!-- Portfolio item For Post modal popup-->
+{% if post %}
+<section class="page-section bg-light" id="portfolio">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Project details-->
+                <h2 class="text-uppercase"> {{ post.title }} </h2>
+                <p class="item-intro text-muted">{{ post.create_date }}</p>
+                <div class="row">
+                    <div class="text-start col-md-6">
+                        <strong>WRITER</strong> {{ post.writer }}
+                    </div>
+                    <div class="text-end col-md-6">
+                        <strong>POST ID</strong> {{ post.id }}
+                    </div>
+                </div>
+
+                {% if request.user == post.writer %}
+                <hr/>
+                <div class="row">
+                    <div class="container">
+                        <div class="row align-items-end">
+                            <div class="col-lg-12 text-lg-end">
+                                <a class="link-dark text-decoration-none me-3" href="/board/update/{{ post.id }}">Edit</a>
+                                <a class="link-dark text-decoration-none" href="/board/delete/{{ post.id }}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <hr/>
+                <div class="container">
+                    <div class="row align-items-center">
+                        {% if post.id|modulo:6 == 0 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 1 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 2 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 3 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 4 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />
+                        {% elif post.id|modulo:6 == 5 %}
+                        <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />
+                        {% endif %}
+                        <!--                    <p>{{ post.contents }}</p>-->
+                        <!--                    컨텐츠 출력할 때 코드가 아니라 그냥 문자열로 나오게함 -->
+                    </div>
+                </div>
+
+                <hr/>
+                <p>{{ post.contents | safe }}</p>
+                <!--                    safe 옵션 추가해서 이 글은 안전한거니까 출력하도록 함-->
+                <hr/>
+
+                <!--
+                <script>
+                    function sendAjax(bid){
+                        var httpRequest = new XMLHttpRequest();
+
+                        httpRequest.onreadystatechange = function() {
+                            if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200 ) {
+                                document.getElementById("text").innerHTML = httpRequest.responseText;
+                            }
+                        };
+
+                        httpRequest.open("POST", "/reply/create/"+bid, true);
+                        const contents = document.getElementById('id_contents').value;
+                        console.log(contents)
+                        httpRequest.send("contents="+contents);
+                    }
+                </script>
+                -->
+                <div class="form-group">
+                    <form action="/reply/create/{{post.id}}" method="post" >
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-10">
+                                <input name="contents" placeholder="댓글 내용을 입력해주세요" class="form-control" type="text" >
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary text-uppercase" >댓글달기</button>
+                                <!--                                    <button type="submit" onclick="sendAjax({{post.id}})" class="btn btn-primary text-uppercase" >댓글달기</button>-->
+                            </div>
+                        </div>
+                    </form>
+                </div> <br/>
+                <!--                    <form action="/reply/create/{{post.id}}" method="post" id="modal_form{{post.id}}">-->
+                <!--                        {% csrf_token %}-->
+                <!--                        <div class="row text-center">-->
+                <!--                            <div class="col-md-8">-->
+                <!--                                <textarea class="form-control" name="contents" id="id_contents" form="modal_form{{post.id}}"></textarea>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-4">-->
+                <!--                                <button type="submit" onclick="sendAjax({{post.id}})" class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" form="modal_form{{post.id}}">댓글달기</button>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </form>-->
+                <div class="container">
+                    <div class="row">
+                                {% for reply in post.reply_set.all %}
+                        <div class="col-md-9">
+                            <ul class="list-inline">
+                                <li>
+                                    <p class="text-muted">
+                                        <strong>{{ reply.writer }}</strong> | {{ reply.contents }}
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3">
+                        {% if request.user == reply.writer %}
+                            <div class="row align-items-end">
+                                <div><a class="link-dark text-decoration-none me-3" href="">Edit</a></div>
+                                <div><a class="link-dark text-decoration-none" href="">Delete</a></div>
+                            </div>
+                        {% endif %}
+                        </div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+
+                    <a href="/board/list">
+                        <button class="btn btn-primary text-uppercase" type="button">
+                            <i class="fas fa-xmark me-1"></i>
+                            목록으로 돌아가기
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endif %}
+
+
+<!--{% if post %}-->
+<!--    <a href="../list">목록</a> <br/>-->
+<!--    {{ post.id }} <br/>-->
+<!--    {{ post.title }} <br/>-->
+<!--    {{ post.contents }} <br/>-->
+<!--    {{ post.create_date }} <br/>-->
+<!--    {{ post.writer }} <br/>-->
+<!--    {% if post.writer == request.user %}-->
+<!--        <a href="../update/{{post.id}}">수정</a>-->
+<!--        <a href="/board/delete/{{post.id}}">삭제</a>-->
+<!--    {% endif %}-->
+<!--<br/>-->
+
+<!--<form action="/reply/create/{{ post.id }}" method="post">-->
+<!--    {% csrf_token %}-->
+<!--    {{ replyForm }}-->
+<!--    &lt;!&ndash; <input type="hidden" name="bid" value="{{ post }}"/> &ndash;&gt;-->
+<!--    &lt;!&ndash; 나는 원래 따로 보냈지만 강사님이 url에 post.id 를 추가하셔서 지움 &ndash;&gt;-->
+<!--    <button>댓글 저장</button>-->
+<!--</form>-->
+
+<!--<br/>-->
+
+<!--{% for reply in post.reply_set.all %}-->
+<!--    {{ reply.contents }} <br/>-->
+<!--{% endfor %}-->
+<!--
+{% for reply in replys %}
+    {% if reply.post == post %}
+        {{ reply.id }}
+        {{ reply.contents }}
+        {{ reply.writer }} <br/>
+    {% endif %}
+{% endfor %}
+-->
+{% endif %}
+
+{% endblock %}
