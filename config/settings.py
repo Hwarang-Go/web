@@ -38,9 +38,57 @@ INSTALLED_APPS = [
     'board',
     'product',
     'reply',
+
+    # email 인증 할 때 필요한 거
+    'django.contrib.sites', # 여러 사이트 한 서버에서 관리할 때, 여기서는 allauth에서 필요해서 추가함
+    'user',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount', # 카카오 인증, 네이버 아이디 로그인할 때 쓰이는거
 ]
 
 # django에서 쓰는 app들. 위에다 써주면 됨. 여기다 등록하지 않아도 접근자체는 되지만, 후에 migration 할 때 등록되어 있어야하므로 등록할것
+
+AUTH_USER_MODEL = 'user.User'
+
+SITE_ID = 1 # 여러 개가 한 서버에서 관리 될 때 구분할 수 있는 아이디, 실습에서는 하나만 쓰는데 그 아이디를 1로 둠
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# 이메일 인증할 때 필요한 거
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = secrets['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PW']  # 앱 비밀 번호
+EMAIL_USE_TLS = True  # USE 를 USER라고 해서 계속 smtp auth error 나옴
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[이메일 인증]'
+
+# 회원 가입할 때 인증하는데 뭘로 할거냐
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+# 이렇게 하면 username 없이 email로 한다는것
+# 위에 3줄 없을때 signup 페이지에 username 도 있었는데
+# 추가하고 새로고침 하니까 email 만 뜸
+
+
+# 쓸 수 있는 3개 값
+# none 인증 안함,
+# optional 인증할 수 있는데 로그인은 됨, (default 값) 그래서 터미널에 이메일 내용 나온거
+# mandatory 강제적으로 인증해야 로그인되게 함
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+# 보낸 인증 메일 클릭해서 사용자가 접속하면 get 방식으로 들어오면 허용을 시켜줄거냐라는 설정을 True로 한거임
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -133,6 +181,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# 사용자 이미지 올라오는 곳 설정
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # static 은 리스트로 해도 되지만, media 는 하나만 해야함
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
