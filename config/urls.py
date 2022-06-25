@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
@@ -53,7 +55,7 @@ urlpatterns = [
     # Kakao login
     path('kakaoLogin', user.views.kakaoLoginPage),
     path('oauth/redirect', user.views.getcode),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 """
 22.06.16 (목)
 url 관련해서 trailing slash 검색해서 더 알아볼것

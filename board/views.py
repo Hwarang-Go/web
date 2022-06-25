@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from board.forms import PostForm
-from board.models import Post
+from board.models import Post, PostImage
 from reply.forms import ReplyForm
 from reply.models import Reply
 
@@ -39,6 +39,16 @@ def create(request):
             post = postForm.save(commit=False)
             post.writer = request.user # 사용자 정보 추가
             post.save()
+
+            # save images
+            # request.FILES.getlist 로 업로드된 파일들 불러옴
+            for image in request.FILES.getlist('image', None):
+                print(image)
+                postImage = PostImage()
+                print(postImage)
+                postImage.image = image
+                postImage.post = post
+                postImage.save()
         return redirect('/board/read/'+str(post.id))
         # 게시글 생성 후에 리스트가 아니라 그 게시글이 보이도록 리다이렉트
         #return render(request, "board/createResult.html")
@@ -83,7 +93,10 @@ def read(request, bid):
     # path를 통해 넘어온 bid 변수는 인자로 받을수 있음(request.GET.get() 이거 안쓰고)
     # posts = Post.objects.filter(id=bid) # filter, all 로 받아오면 query set을 리스트로 반환 받음 (1개만 불러와도)
     # post = Post.objects.get(Q(id=bid)) # 하나만 받아옴, Q 는 쿼리, 하나만 할땐 안써도 됨
-    post = Post.objects.prefetch_related('reply_set').get(id=bid) # 기본 형태: 썩 좋지 않음. 나중에 고도화 함(SQL 필요)
+    post = Post.objects\
+        .prefetch_related('reply_set')\
+        .prefetch_related('postimage_set')\
+        .get(id=bid) # 기본 형태: 썩 좋지 않음. 나중에 고도화 함(SQL 필요)
     # 이제 post 에는 id, title, contents, writer, "reply_set" 이 있음
     # prefetch_related 인자로는 관계를 맺고 있는 가지고 오고 싶은 모델을 _set 붙여서 씀 _set
     # context = {'post': post} # render 인자로 context 넘길 때 context 는 dictionary 타입임 그냥 dictionary 로 바로 넘겨줌

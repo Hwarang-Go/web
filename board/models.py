@@ -34,3 +34,8 @@ class Post(models.Model):  # django 가 만들어둔 models.Model 을 상속받�
     # blank 는 입력이 되지 않아도 되도록 하는 속성
     # writer에  User 관계와 겹쳐서 참조할 때 구분이 안가서
     # related_name="likes" 를 해서 참조할 떄 저 이름을 쓰도록 함
+
+
+class PostImage(models.Model):
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)

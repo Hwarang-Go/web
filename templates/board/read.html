@@ -39,19 +39,23 @@
                 <hr/>
                 <div class="container">
                     <div class="row align-items-center">
-                        {% if post.id|modulo:6 == 0 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 1 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 2 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 3 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 4 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 5 %}
-                        <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />
-                        {% endif %}
+                        <!-- images -->
+<!--                        {% if post.id|modulo:6 == 0 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 1 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 2 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 3 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 4 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 5 %}-->
+<!--                        <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />-->
+<!--                        {% endif %}-->
+                        {% for postimage in post.postimage_set.all %}
+                            <img class="img-fluid" src="{{ postimage.image.url }}" alt="...">
+                        {% endfor %}
                         <!--                    <p>{{ post.contents }}</p>-->
                         <!--                    컨텐츠 출력할 때 코드가 아니라 그냥 문자열로 나오게함 -->
                     </div>
