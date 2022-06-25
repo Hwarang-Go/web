@@ -48,8 +48,11 @@ urlpatterns = [
     path('user/logout', user.views.logout),
 
     # allauth
-    path('accounts/', include('allauth.urls'))
+    path('accounts/', include('allauth.urls')),
 
+    # Kakao login
+    path('kakaoLogin', user.views.kakaoLoginPage),
+    path('oauth/redirect', user.views.getcode),
 ]
 """
 22.06.16 (목)

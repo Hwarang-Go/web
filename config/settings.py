@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount', # 카카오 인증, 네이버 아이디 로그인할 때 쓰이는거
+
+    # allauth kakao login
+    'allauth.socialaccount.providers.kakao',
 ]
 
 # django에서 쓰는 app들. 위에다 써주면 됨. 여기다 등록하지 않아도 접근자체는 되지만, 후에 migration 할 때 등록되어 있어야하므로 등록할것

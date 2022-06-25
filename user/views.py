@@ -1,8 +1,71 @@
+import os
+
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 # Create your views here.
+from django.views.decorators.csrf import csrf_exempt
+from user.models import User
+from config.settings import BASE_DIR
+import requests
+
+def getcode(request):
+    code = request.GET.get('code', None)  # 인가 코드
+    # http 프로토콜로 카카오 api 에게 요청
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': 'a24f138319b3c2e78b7befe47821f2cd',
+        'redirect_uri': 'http://127.0.0.1:8000/oauth/redirect',
+        'code': code,
+    }
+    headers = {
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+    }
+    res = requests.post('https://kauth.kakao.com/oauth/token', data=data, headers=headers)
+    token_json = res.json()
+    print(token_json)
+    access_token = token_json['access_token']
+    # 액세스 토큰으로 사용자 정보 받아와서 우리 디비에 저장시키는게 목적
+
+    headers = {
+        'Authorization': 'Bearer ' + access_token,
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    }
+    res = requests.get('https://kapi.kakao.com/v2/user/me', headers=headers)
+    # res = requests.post('https://kapi.kakao.com/v2/user/me', headers=headers)
+    # 위의 요청은 get, post 모두 가능
+    profile_json = res.json()
+
+
+    kakaoid = profile_json['id']
+
+    user = User.objects.filter(email=kakaoid)
+
+    if user.exists():
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    else:
+        # 불러온 회원이 없으면
+        user = User()
+        user.username = profile_json['properties']['nickname']
+        user.email = kakaoid
+        user.save()
+
+
+    # 추가로 해볼 것은 db에 칼럼 하나 만들고 어떤 소셜로그인을 통해 가입했는지 기록
+
+
+    return HttpResponse(code)
+
+def kakaoLoginPage(request):
+    secret_file = os.path.join(BASE_DIR, 'secret.json')
+    with open(secret_file) as f:
+        import json
+        secrets = json.loads(f.read())  # json 타입의 변수에 secret.json 파일 내용 받아옴
+    print(type(secrets['JAVASCRIPT_KEY']))
+    return render(request, 'login.html', secrets)
+
 
 def signup(request):
     if request.method == 'GET':
