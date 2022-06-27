@@ -21,6 +21,7 @@ SECRET_KEY = secrets['SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['*',]
 # * 를 리스트 안에 쓰면 모든 주소 들어오는거 가능
 
 
@@ -33,10 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'ex01',
-    # 'ex02',
     'board',
-    'product',
     'reply',
 
     # email 인증 할 때 필요한 거
@@ -193,3 +191,40 @@ MEDIA_ROOT = BASE_DIR / 'media'  # static 은 리스트로 해도 되지만, med
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+if DEBUG:
+    pass
+else:
+    ALLOWED_HOSTS = ['*', ]
+
+    # For AWS
+    AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
+    AWS_REGION = 'ap-northeast-2'
+    AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+
+    # https://arikong.tistory.com/21 참고
+    # https://intrepidgeeks.com/tutorial/aws-s3-access-denied-error-when-packet-policy-fails 참고
+    # https://kimcoder.tistory.com/381
+
+    AWS_DEFAULT_ACL = 'public-read'
+    #AWS_DEFAULT_ACL = 'None'
+    AWS_LOCATION = 'static'
+    AWS_MEDIA_LOCATION = 'media'
+
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/2.2/howto/static-files/
+    STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # STATICFILES_DIRS = [
+    #     BASE_DIR / 'static',
+    # ]
+
+    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+    DEFAULT_FILE_STORAGE = 'config.asset_storage.MediaStorage'
+    #DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

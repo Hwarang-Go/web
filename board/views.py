@@ -25,7 +25,7 @@ def mainPage(request):
 # django 에서 지원하는 데코레이터 (자바의 어노테이션)
 # 달기만 하면 기능이 추가됨
 # login_url 속성을 넣어서 로그인 안되어있으면 해당 url로 이동
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def create(request):
     if request.method == 'GET':
         postForm = PostForm() # form 객체를 받아옴
@@ -78,7 +78,7 @@ def list(request):
     # posts = Post.objects.all()
     # 정렬 은 order_by(): 기본은 오름차순,
     # 내림차순은 id 기준으로 '-' 붙여서 하면 됨
-    posts = Post.objects.all().order_by('-id')
+    posts = Post.objects.prefetch_related('postimage_set').order_by('-id')
 
     # testPost = Post.objects.filter(title='test') # filer test
     # requset.GET.get('id', id_num) 으로 특정 아이디 불러와서 할수도있음
@@ -118,7 +118,7 @@ def read(request, bid):
     #   - 쿼리를 2개가 실행됨 : 프레임워크에 따라 성능이 다름, django 는 Query Set cash 에 저장해두고 result cash... ORM에서 자세히 다룸
 
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def delete(request, bid):
     post = Post.objects.get(id=bid)
     if request.user != post.writer:
@@ -127,7 +127,7 @@ def delete(request, bid):
     return redirect('/board/list')
     # render 말고 redirect 지워지는 화면으로 다시 안돌아가게
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def update(request, bid):
     post = Post.objects.get(id=bid)
     if request.method == 'GET':
@@ -157,7 +157,7 @@ def update(request, bid):
         return redirect('/board/read/'+str(post.id))
 
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def like(request, bid):
     # 누르면 게시글에 좋아요 추가
     post = Post.objects.get(id=bid)

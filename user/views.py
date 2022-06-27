@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -40,12 +41,12 @@ def getcode(request):
 
 
     kakaoid = profile_json['id']
-
     user = User.objects.filter(email=kakaoid)
-
     if user.exists():
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        print('aaa')
+        auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     else:
+        print('bbb')
         # 불러온 회원이 없으면
         user = User()
         user.username = profile_json['properties']['nickname']
@@ -56,14 +57,14 @@ def getcode(request):
     # 추가로 해볼 것은 db에 칼럼 하나 만들고 어떤 소셜로그인을 통해 가입했는지 기록
 
 
-    return HttpResponse(code)
+    return redirect('/board/list')
 
 def kakaoLoginPage(request):
     secret_file = os.path.join(BASE_DIR, 'secret.json')
     with open(secret_file) as f:
         import json
         secrets = json.loads(f.read())  # json 타입의 변수에 secret.json 파일 내용 받아옴
-    print(type(secrets['JAVASCRIPT_KEY']))
+
     return render(request, 'login.html', secrets)
 
 
@@ -120,4 +121,16 @@ def login(request):
             """
             # return redirect('/board/list')
 
+@login_required(login_url='/accounts/login')
+def profile(request):
+    return render(request, 'user/profile.html')
 
+def changeProfilePhoto(request):
+    user = request.user
+    user.image = request.FILES.get('profile_image', None)
+    user.save()
+    return redirect('/accounts/profile')
+
+
+# def login_test(request):
+#     return render(request, 'account/login_test.html')

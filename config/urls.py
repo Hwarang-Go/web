@@ -4,31 +4,18 @@ from django.contrib import admin
 from django.urls import path, include
 
 import board.views
-import ex01.views
-import ex02.views
-import product.views
 import reply.views
 import user.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # 앞에 'admin/'이 id값이고, admin.site.urls 가 실제 접근할 경로
-    # path('ex01/', ex01.views.func1),  # ex01/ 로 접근하면, ex01.views.func1 을 실행시켜라
-    # path('abc', ex01.views.func2),
-    # path('getPost', ex01.views.getPost),
-    # path('input', ex01.views.testTrailingSlash),
-    # path('ex02/func1', ex02.views.func1),
-    # path('ex02/formtag', ex02.views.formtag),
-    # path('ex02/getdata', ex02.views.getData),
     path('', board.views.mainPage),
-    path('product/create', product.views.createFruitsGet),
-    path('product/createPost', product.views.createFruitsPost),
-    path('product/list', product.views.readFruitGet),
-    path('board/create', board.views.create),
-
-    # path('board/create', board.views.createGet),
-    # path('board/createPost', board.views.createPost),
+    # path('product/create', product.views.createFruitsGet),
+    # path('product/createPost', product.views.createFruitsPost),
+    # path('product/list', product.views.readFruitGet),
 
     # board
+    path('board/create', board.views.create),
     path('board/list', board.views.list),
     path('board/read/<int:bid>', board.views.read), # <int:bid> : 변수
     path('board/delete/<int:bid>', board.views.delete),
@@ -45,16 +32,21 @@ urlpatterns = [
     path('reply/update/<int:rid>', reply.views.updateReply),
 
     # User
-    path('user/signup', user.views.signup),
+    # path('user/signup', user.views.signup),
     path('user/login', user.views.login),
-    path('user/logout', user.views.logout),
+    # path('user/logout', user.views.logout),
+    path('user/changeProfilePhoto', user.views.changeProfilePhoto),
 
     # allauth
     path('accounts/', include('allauth.urls')),
+    path('accounts/profile/', user.views.profile),
 
     # Kakao login
     path('kakaoLogin', user.views.kakaoLoginPage),
     path('oauth/redirect', user.views.getcode),
+
+    # test path
+    # path('account/login_test', user.views.login_test),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 """
 22.06.16 (목)

@@ -20,20 +20,26 @@
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
                         </div>
-                        {% if post.id|modulo:6 == 0 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 1 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 2 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 3 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 4 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />
-                        {% elif post.id|modulo:6 == 5 %}
-                            <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />
+<!--                        {% if post.id|modulo:6 == 0 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/1.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 1 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/2.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 2 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/3.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 3 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/4.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 4 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/5.jpg' %}" alt="..." />-->
+<!--                        {% elif post.id|modulo:6 == 5 %}-->
+<!--                            <img class="img-fluid" src="{% static 'assets/img/portfolio/6.jpg' %}" alt="..." />-->
+<!--                        {% endif %}-->
+                        {% if post.postimage_set.all %}
+                        {% for postimage in post.postimage_set.all|slice:":1" %}
+                            <img class="img-fluid" src="{{ postimage.image.url }}" alt="...">
+                        {% endfor %}
+                        {% else %}
+                            <img class="img-fluid" src="{% static 'assets/img/no_images.jpg' %}" alt="...">
                         {% endif %}
-
                     </a>
                     <div class="portfolio-caption">
                         <div class="portfolio-caption-heading">{{ post.title }}</div>

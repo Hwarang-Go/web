@@ -1,3 +1,5 @@
 secret.json
 .idea
 db.sqlite3
+!/media/images/
+/media/images/*

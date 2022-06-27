@@ -39,12 +39,12 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="">{{ request.user }} 로그인 중</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/accounts/profile">{{ request.user }} 님의 프로필</a></li>
                         <li class="nav-item"><a class="nav-link" href="/board/create">게시글 작성</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/user/logout">로그아웃</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/accounts/logout">로그아웃</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/user/login">로그인</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/user/signup">회원가입</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/accounts/login">로그인</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/accounts/signup">회원가입</a></li>
                     {% endif %}
                     <li class="nav-item"><a class="nav-link" href="/">첫화면</a></li>
                     <li class="nav-item"><a class="nav-link" href="/board/list">게시판</a></li>

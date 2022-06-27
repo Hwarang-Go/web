@@ -13,7 +13,7 @@ from reply.forms import ReplyForm
 from reply.models import Reply
 
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 @csrf_exempt
 def createReply(request, bid):
     # if request.method == 'GET':
@@ -71,7 +71,7 @@ def readReplyOne(request, rid):
         return render(request, 'reply/read.html', {'reply':reply})
 
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def updateReply(request, rid):
     reply = Reply.objects.get(id=rid)
     if request.method == 'GET':
@@ -88,7 +88,7 @@ def updateReply(request, rid):
         return redirect('/board/read/' + str(reply.post_id))
 
 
-@login_required(login_url='/user/login')
+@login_required(login_url='/accounts/login')
 def deleteReply(request, rid):
     reply = Reply.objects.get(id=rid)
     if request.user != reply.writer:
