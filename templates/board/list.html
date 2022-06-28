@@ -65,9 +65,8 @@
 
                             var json_data = JSON.parse(httpRequest.responseText);
                             if (json_data['message'] == 'added') {
-                                event.innerText = '♥ ' + (like_cnt+1);
+                                event.innerText = '♥ ' + json_data['like_cnt'];
                             }
-                            // 기존에 있는 like_cnt를 사용하므로써 쓸데없는 통신 줄이는 방법
                             else if (json_data['message'] == 'deleted'){
                                 event.innerText = '♡ ' + json_data['like_cnt'];
                             }

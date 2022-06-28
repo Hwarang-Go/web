@@ -43,19 +43,16 @@ def getcode(request):
     kakaoid = profile_json['id']
     user = User.objects.filter(email=kakaoid)
     if user.exists():
-        print('aaa')
-        auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        auth_login(request, user.first(), backend='django.contrib.auth.backends.ModelBackend')
     else:
-        print('bbb')
-        # 불러온 회원이 없으면
+        # 불러온 회원이 없으면 user 생성
         user = User()
         user.username = profile_json['properties']['nickname']
         user.email = kakaoid
         user.save()
-
+        auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
     # 추가로 해볼 것은 db에 칼럼 하나 만들고 어떤 소셜로그인을 통해 가입했는지 기록
-
 
     return redirect('/board/list')
 

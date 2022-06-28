@@ -6,7 +6,7 @@
 <!-- update 기능도 이 페이지를 쓰는데 action="create" 면 오류남. 없애자 -->
 <section class="page-section bg-light" id="portfolio">
     <div class="container">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 <!--            {{ postForm }}-->
             <div class="col-md-12">
@@ -15,6 +15,7 @@
             <hr/>
             <textarea name="contents" id="summernote" >{{ postForm.contents.value }}</textarea>
 <!--            <button>게시글 작성</button>-->
+            <input multiple type="file" name="image" accept="image/*" id="id_image">
             <hr/>
             <div class="text-center"><button class="btn btn-primary text-uppercase" type="submit">게시글 수정</button></div>
         </form>

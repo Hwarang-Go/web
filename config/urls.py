@@ -23,6 +23,8 @@ urlpatterns = [
 
     # like (in board)
     path('like/<int:bid>', board.views.like),
+    path('reply-like/<int:rid>', reply.views.replyLike),
+
 
     # Reply
     path('reply/create/<int:bid>', reply.views.createReply),

@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -75,8 +75,7 @@ def readReplyOne(request, rid):
 def updateReply(request, rid):
     reply = Reply.objects.get(id=rid)
     if request.method == 'GET':
-        # update form 을 보여주는 페이지로 bid와 함께 이동 url은 update/bid
-        replyForm = ReplyForm(instance=reply)  # 폼 생성한 후, 기존 내용 채워주기 위해서 instance=post[조회한 게시글] 설정
+        replyForm = ReplyForm(instance=reply)
         if request.user != reply.writer:
             return redirect(request, '/board/read/' + str(reply.post_id))
         return render(request, 'reply/create.html', {'replyForm':replyForm})
@@ -95,3 +94,16 @@ def deleteReply(request, rid):
         return redirect('/board/read/' + str(reply.post_id))
     reply.delete()
     return redirect('/board/read/' + str(reply.post_id))
+
+
+@login_required(login_url='/accounts/login')
+def replyLike(request, rid):
+    # 누르면 게시글에 좋아요 추가
+    reply = Reply.objects.get(id=rid)
+    user = request.user
+    if reply.reply_like.filter(id=user.id).exists():
+        reply.reply_like.remove(user)
+        return JsonResponse({'message': 'deleted', 'like_cnt': reply.reply_like.count()})
+    else:
+        reply.reply_like.add(user)
+    return JsonResponse({'message': 'added', 'like_cnt': reply.reply_like.count()})

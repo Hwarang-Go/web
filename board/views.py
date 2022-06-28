@@ -28,11 +28,11 @@ def mainPage(request):
 @login_required(login_url='/accounts/login')
 def create(request):
     if request.method == 'GET':
-        postForm = PostForm() # form 객체를 받아옴
-        context = {
-            'postForm': postForm
-        } # 전달해줄 context는 항상 dictionary 타입인 것 기억
-        return render(request, "board/create.html", context)
+        # postForm = PostForm() # form 객체를 받아옴
+        # context = {
+        #     'postForm': postForm
+        # } # 전달해줄 context는 항상 dictionary 타입인 것 기억
+        return render(request, "board/create.html") #, context)
     elif request.method == 'POST':
         postForm = PostForm(request.POST)
         if postForm.is_valid():  # 값들의 유효성 검사
@@ -54,25 +54,6 @@ def create(request):
         #return render(request, "board/createResult.html")
     # method 하나로 createGet, createPost 모두 처리
     # -> GET, POST 방식을 메소드 하나로 처리
-
-def createPost(request):
-
-    # post = Post()
-    # post.title = request.POST.get('ptitle', None)
-    # post.contents = request.POST.get('pcontents', None)
-    # print("*********************************************")
-    # print(post.title, post.contents)
-    # post.save()
-    # 위에 코드를 아래처럼 변경
-    postForm = PostForm(request.POST)
-    if postForm.is_valid(): # 값들의 유효성 검사
-        post = postForm.save(commit=False)
-        post.save()
-        # model form 에서 save 하면 db 에 저장 되는데
-        # 강사님은 commit=False 해서 db에 저장 안하고, post에 Post 객체 반환하고
-        # Post 객체를 저장함
-        # django 오피셜로 저런 방법을 말했었다고 하는데, 지금은 다르다고 함
-    return render(request, "board/createResult.html")
 
 def list(request):
     # posts = Post.objects.all()
@@ -137,8 +118,6 @@ def update(request, bid):
         context = {
             'postForm': postForm
         }
-        print(type(postForm))
-        print(postForm)
         if request.user != post.writer:
             return redirect('/board/read/' + str(post.id))
         return render(request, 'board/update.html', context)

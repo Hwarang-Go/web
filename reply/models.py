@@ -8,3 +8,5 @@ class Reply(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    reply_like = models.ManyToManyField(User, related_name="reply_likes", blank=True)
