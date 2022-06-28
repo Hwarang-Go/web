@@ -66,28 +66,27 @@
                 <div class="container">
                     <div class="row">
                         {% for reply in post.reply_set.all %}
-                        <div class="col-md-9">
-                            <ul class="list-inline">
-                                <li>
-                                    <p class="text-muted">
-                                        <span id="heart" class="portfolio-caption-heading" onclick="sendRequest({{ reply.id }}, this, {{ reply.reply_like.count }})">
-                                            {% if request.user in reply.reply_like.all %}
-                                            ♥ {{ reply.reply_like.count }}
-                                            {% else %}
-                                            ♡ {{ reply.reply_like.count }}
-                                            {% endif %}
-                                        </span>
-                                        <strong>{{ reply.writer }}</strong> | {{ reply.contents }}
-                                    </p>
-                                </li>
-                            </ul>
+                        <div class="col-md-10">
+                            <strong>{{ reply.writer }}</strong>
+                            <span id="heart" class="portfolio-caption-heading" onclick="sendRequest({{ reply.id }}, this, {{ reply.reply_like.count }})">
+                                {% if request.user in reply.reply_like.all %}
+                                ♥ {{ reply.reply_like.count }}
+                                {% else %}
+                                ♡ {{ reply.reply_like.count }}
+                                {% endif %}
+                            </span>
+                            <input type="text" id="replyContent{{ reply.id }}" class="form-control" readonly value="{{ reply.contents }}"/>
                         </div>
-                        <div class="row col-md-3">
+                        <div class="row col-md-2">
                             {% if request.user == reply.writer %}
-                            <div class="align-items-end">
-                                <a class="link-dark text-decoration-none" href="/reply/update/{{ reply.id }}">Edit</a>
-                                <a class="link-dark text-decoration-none" href="/reply/delete/{{ reply.id }}">Delete</a>
-                            </div>
+                            <ul class="list-inline">
+<!--                                <a class="link-dark text-decoration-none" href="/reply/update/{{ reply.id }}">Edit</a>-->
+<!--                                <a class="link-dark text-decoration-none" href="/reply/delete/{{ reply.id }}">Delete</a>-->
+                                <li><a id="replyUpdate{{ reply.id }}" class="link-dark text-decoration-none" href="#" onclick="replyUpdate({{ reply.id }})">Edit</a></li>
+                                <li><a class="link-dark text-decoration-none" href="/reply/delete/{{ reply.id }}">Delete</a></li>
+                                <li><a id="replySubmit{{ reply.id }}" class="link-dark text-decoration-none" href="#" style="display:none" onclick="replySubmit({{ reply.id }}, {{ post.id }})">Edit</a></li>
+                                <li><a id="replyUpdateCancel{{ reply.id }}" class="link-dark text-decoration-none" style="display:none" href="#" onclick="replyUpdateCancel({{ reply.id }})">Cancel</a></li>
+                            </ul>
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -108,35 +107,106 @@
 
 </section>
 {% endif %}
-
+<!-- https://memostack.tistory.com/181 -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script>
-                function sendRequest(rid, event, like_cnt) {
-                    var httpRequest = new XMLHttpRequest();
-                    httpRequest.onreadystatechange = function() {
-                        if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200 ) {
-                            // document.getElementById("text").innerHTML = httpRequest.responseText;
+    function sendRequest(rid, event, like_cnt) {
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function() {
+            if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200 ) {
+                // document.getElementById("text").innerHTML = httpRequest.responseText;
 
-                            var json_data = JSON.parse(httpRequest.responseText);
-                            if (json_data['message'] == 'added') {
-                                event.innerText = '♥ ' + json_data['like_cnt'];
-                            }
-                            // 기존에 있는 like_cnt를 사용하므로써 쓸데없는 통신 줄이는 방법
-                            else if (json_data['message'] == 'deleted'){
-                                event.innerText = '♡ ' + json_data['like_cnt'];
-
-                            }
-                            // 백엔드에서 post.like.count() 로 굳이 다시 세서 통신을 하기 때문에 안좋은 코드
-
-                            // 아래 코드는 그냥 문자열로 한것, 위에는 json으로 파싱해서 쓰는것
-                            // if (httpRequest.responseText == '{"message": "ok"}') {
-                            //    console.log('test2');
-                            // }
-                        }
-                    };
-                    // GET 방식으로 요청을 보내면서 데이터를 동시에 전달함.
-                    httpRequest.open("GET", "/reply-like/"+rid, true);
-                    httpRequest.send();
+                var json_data = JSON.parse(httpRequest.responseText);
+                if (json_data['message'] == 'added') {
+                    event.innerText = '♥ ' + json_data['like_cnt'];
                 }
-            </script>
+                // 기존에 있는 like_cnt를 사용하므로써 쓸데없는 통신 줄이는 방법
+                else if (json_data['message'] == 'deleted'){
+                    event.innerText = '♡ ' + json_data['like_cnt'];
+
+                }
+                // 백엔드에서 post.like.count() 로 굳이 다시 세서 통신을 하기 때문에 안좋은 코드
+
+                // 아래 코드는 그냥 문자열로 한것, 위에는 json으로 파싱해서 쓰는것
+                // if (httpRequest.responseText == '{"message": "ok"}') {
+                //    console.log('test2');
+                // }
+            }
+        };
+        // GET 방식으로 요청을 보내면서 데이터를 동시에 전달함.
+        httpRequest.open("GET", "/reply-like/"+rid, true);
+        httpRequest.send();
+    }
+
+    const replyUpdate = (rid) => {
+        console.log(rid)
+        let replyUpdate = document.querySelector('#replyUpdate' + rid);
+        let replyDelete = document.querySelector('#replyDelete' + rid);
+        let replySubmit = document.querySelector('#replySubmit' + rid);
+        let replyUpdateCancel = document.querySelector('#replyUpdateCancel' + rid);
+        let replyContent = document.querySelector('#replyContent' + rid);
+        console.log(replyUpdate);
+        replyUpdate.style.display = 'none';
+        replyDelete.style.display = 'none';
+        replySubmit.style.display = 'inline-block';
+        replyUpdateCancel.style.display = 'inline-block';
+        replyContent.readOnly = false;
+    }
+
+    const replyUpdateCancel = (rid) => {
+        console.log(rid)
+        let replyUpdate = document.querySelector('#replyUpdate' + rid);
+        let replyDelete = document.querySelector('#replyDelete' + rid);
+        let replySubmit = document.querySelector('#replySubmit' + rid);
+        let replyUpdateCancel = document.querySelector('#replyUpdateCancel' + rid);
+        let replyContent = document.querySelector('#replyContent' + rid);
+
+        replyUpdate.style.display = 'inline-block';
+        replyDelete.style.display = 'inline-block';
+        replySubmit.style.display = 'none';
+        replyUpdateCancel.style.display = 'none';
+        replyContent.readOnly = true;
+    }
+
+    const replySubmit = (rid, bid) => {
+        let replyContent = document.querySelector('#replyContent'+rid).value;
+        let param = {
+            'rid': rid,
+            'bid': bid,
+            'contents': replyContent
+        }
+
+        $.ajax({
+            url : '/replyUpdate',
+            type : 'POST',
+            headers: {
+                'X-CSRFTOKEN' : '{{ csrf_token }}'
+            },
+            data : JSON.stringify(param),
+            success:function(data){
+                console.log(data);
+                if (data.result == 'ok') {
+                    let replyUpdate = document.querySelector('#replyUpdate' + rid);
+                    let replyDelete = document.querySelector('#replyDelete' + rid);
+                    let replySubmit = document.querySelector('#replySubmit' + rid);
+                    let replyUpdateCancel = document.querySelector('#replyUpdateCancel' + rid);
+                    let replyContent = document.querySelector('#replyContent' + rid);
+
+                    replyUpdate.style.display = 'inline-block';
+                    replyDelete.style.display = 'inline-block';
+                    replySubmit.style.display = 'none';
+                    replyUpdateCancel.style.display = 'none';
+                    replyContent.readOnly = true;
+                }
+
+            },
+            error: function(){
+                alert('error');
+            }
+        });
+    }
+
+
+</script>
 
 {% endblock %}

@@ -32,6 +32,7 @@ urlpatterns = [
     path('reply/delete/<int:rid>', reply.views.deleteReply),
     path('reply/read/<int:rid>', reply.views.readReplyOne),
     path('reply/update/<int:rid>', reply.views.updateReply),
+    path('replyUpdate', reply.views.update),
 
     # User
     # path('user/signup', user.views.signup),

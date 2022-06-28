@@ -86,6 +86,24 @@ def updateReply(request, rid):
             reply.save()
         return redirect('/board/read/' + str(reply.post_id))
 
+@login_required(login_url='accounts/login')
+def update(request):
+    if request.method == 'POST':
+        jsonObject = json.loads(request.body)
+        reply = Reply.objects.get(id=jsonObject.get('rid'))
+        context = {
+            'result': 'no'
+        }
+        print('aaa')
+        if reply is not None:
+            print('bbb')
+            reply.contents = jsonObject.get('contents')
+            reply.save()
+            context['result'] = 'ok'
+
+            return JsonResponse(context)
+        return JsonResponse(context)
+
 
 @login_required(login_url='/accounts/login')
 def deleteReply(request, rid):
